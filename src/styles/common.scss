@@ -1,0 +1,10 @@
+.hw-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.b-height {
+  width: calc(100vw - 13.33333vw);
+}

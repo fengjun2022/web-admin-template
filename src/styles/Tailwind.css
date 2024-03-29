@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+    .tb-blue {
+        @apply ml-4 text-[#409eff] cursor-pointer,
+
+    }
+
+    .tb-red {
+        @apply ml-4 text-[#e6416e] cursor-pointer,
+
+    }
+
+    .tb-green {
+        @apply ml-4 text-[#4cb34c] cursor-pointer
+    }
+
+}
+
