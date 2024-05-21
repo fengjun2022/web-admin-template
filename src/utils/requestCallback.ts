@@ -1,4 +1,5 @@
 import {AxiosResponse} from "axios";
+// @ts-ignore
 import {RES} from "@/types";
 import {ElMessage} from "element-plus";
 import {errStatus, errStatusEmun} from "@/enum/errStatus";

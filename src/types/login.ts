@@ -5,6 +5,7 @@ export  type loginForm = {
 
 export type userTokenAndPermission = {
     token: string,
-    permission: string
-    userName:string
+    permission: string,
+    userName:string,
+
 }

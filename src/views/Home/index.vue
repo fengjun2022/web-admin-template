@@ -1,11 +1,12 @@
 <template>
   <div>
+    <!--    <Dialog :buttons="dialogButtons" :control="dialogObj">-->
+    <!--    </Dialog>-->
+    <public-form ref="dataForm" :form-items="formItem"></public-form>
 
-    <div class="box">
 
-
-    </div>
-
+    <el-button @click="test(1)">测试1</el-button>
+    <el-button @click="test(2)">测试2</el-button>
 
   </div>
 </template>
@@ -20,6 +21,16 @@ import {
   onUpdated,
   watch, reactive, nextTick,
 } from "vue";
+
+
+
+
+
+
+
+
+
+
 
 // 创建响应式数据
 const state = ref("Hello, Vue 3！");
@@ -67,12 +78,4 @@ watch(state, (newValue, oldValue) => {
 // get()
 </script>
 
-<style scoped>
-.box{
-  width: 100%;
-  height: 100%;
-  background: palegoldenrod;
-}
-
-
-</style>
+<style scoped></style>

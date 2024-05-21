@@ -1,8 +1,7 @@
 <template>
   <div class="logo-container flex-center">
     <a href="/">
-      <img class="logo" alt="logo" src="/vite.svg"/>
-      <div class="title" v-if="true">后台管理</div>
+      <div class="title" v-if="true">WAPI协议互联互通检测平台</div>
     </a>
   </div>
 

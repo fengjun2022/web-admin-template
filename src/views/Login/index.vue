@@ -64,10 +64,10 @@ import type {loginForm, userTokenAndPermission} from "@/types/login";
 import slideVerifyPop from "@/components/slideVerify/slideVerifyPop.vue";
 import {loginSetting} from "@/store/settings/loginSetting";
 
+import {login} from "@/api/user";
 import {useRoute, useRouter} from "vue-router";
 import {userInfo} from "@/store/user/userInfo";
 import {loadingSetting} from "@/store/Loading/Loading";
-import {Container} from "postcss";
 
 const loginSettingStore = loginSetting();
 const userInfoStore = userInfo();
@@ -102,13 +102,8 @@ const onSubmit = async () => {
   }
   loading.isShow()
   try {
-    // 实际接口调用
     // const res = await login<userTokenAndPermission>(loginUserForm.value);
-
-    const res = {data:{
-      token:"123",
-        userName:"123zs"
-      }}
+    const res = {data:{token:"111",userName:"柚子"}}
 
     localStorage.setItem('createUserInfo', JSON.stringify(res.data))
     // 登录后重置登录次数，重置滑动成功状态，
@@ -125,6 +120,9 @@ const onSubmit = async () => {
 
 
 };
+
+
+
 
 
 /**

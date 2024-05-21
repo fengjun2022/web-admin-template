@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { StoreName } from "@/constant/StoreName";
 import { ref } from "vue";
-// @ts-ignore
 import { DefaultConfig } from "@/class/DefaultConfig";
 import { ThemeConfigProps } from "@/types/store";
 

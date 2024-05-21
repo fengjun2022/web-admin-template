@@ -43,43 +43,42 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
+import { reactive, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 let state = reactive({
   jumpTime: 5,
-  oops: "抱歉!",
-  headline: "当前页面不存在...",
-  info: "请检查您输入的网址是否正确，或点击下面的按钮返回首页。",
-  btn: "返回首页",
+  oops: '抱歉!',
+  headline: '当前页面不存在...',
+  info: '请检查您输入的网址是否正确，或点击下面的按钮返回首页。',
+  btn: '返回首页',
   timer: 0,
-});
+})
+
+
 
 onMounted(() => {
-  timeChange();
-});
+  timeChange()
+})
 
 onBeforeUnmount(() => {
-  clearInterval(state.timer);
-});
+  clearInterval(state.timer)
+})
 
 function timeChange() {
-  // @ts-ignore
   state.timer = setInterval(() => {
     if (state.jumpTime) {
-      state.jumpTime--;
+      state.jumpTime--
     } else {
-      router.replace({ path: "/" });
-      clearInterval(state.timer);
+      router.replace({ path: '/' })
+      clearInterval(state.timer)
     }
-  }, 1000);
+  }, 1000)
 }
 </script>
 
 <style lang="scss" scoped>
 @import "@/styles/variable";
-
 .error-container {
   position: absolute;
   top: 40%;

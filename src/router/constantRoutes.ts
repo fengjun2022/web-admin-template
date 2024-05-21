@@ -1,12 +1,14 @@
 // import { readdir } from "fs";
 
+import {config} from "@/class/RouterConfig";
+
 const LAYOUT = () => import("@/layouts/index.vue");
 export default [
     {
         path: "/",
         name: "Home",
         component: LAYOUT,
-        redirect: "/index",
+        redirect: config.HOME_URL,
         meta: {
             title: "首页",
             icon: "HomeFilled",
@@ -25,6 +27,10 @@ export default [
             },
         ],
     },
+
+
+
+
 
 
 
