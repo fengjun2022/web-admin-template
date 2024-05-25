@@ -17,8 +17,8 @@
               :data="tableData.value">
       <slot>
 
-        <el-table-column v-if="props.selection" type="selection" width="55"/>
-        <el-table-column type="index" width="55" label="序号" align="center"></el-table-column>
+        <el-table-column v-if="props.selection" type="selection" width="75"/>
+        <el-table-column type="index" width="55" label="ID" align="center"></el-table-column>
         <el-table-column :fixed="item.fixed ? item.fixed : false"
                          v-for="(item,index) in metadata['metaArr']" :key="index"
                          :label="item.label"
@@ -70,7 +70,6 @@
 <script setup lang="ts">
 import {ref, onMounted, onUnmounted, onBeforeMount, onBeforeUpdate, onUpdated, computed, watch} from 'vue';
 import {btnOption2, mateDataOptions} from "@/components/Table/type";
-import type {Ref} from "vue"
 import {layoutRouterSetting} from "@/store/settings/layoutRouterSetting";
 import {btColor} from "./enum/index"
 
@@ -82,6 +81,7 @@ const props = withDefaults(defineProps<{
   maxHeight: number
   // 传入表格元数据
   metadata: mateDataOptions;
+
   // 传入表格宽度
   width?: string,
   // 传入表格高度
@@ -99,7 +99,7 @@ const props = withDefaults(defineProps<{
   // 多选的回调
   selectionCallback?: (val) => void
   // 传入获取数据回调 ，回调第一个应为page，第二个为size callBack需要返回total和 data数据列表
-  callback: (currentPage, pageSize) => Promise<{ data: Ref<object[]>, total: number }>
+  callback: (currentPage, pageSize) => Promise<{ data: object[], total: number }>
 
 }>(), {
   maxHeight: 500,
@@ -118,9 +118,9 @@ const props = withDefaults(defineProps<{
 
 
 // 当前页数
-const currentPage = ref(1)
+let currentPage
 // 当前条数
-const pageSize = ref(30)
+let pageSize
 
 //总条数
 const total = ref();
@@ -132,13 +132,17 @@ const background = ref(true)
 // 是否禁用分页
 const disabled = ref(false)
 
-const tableData = ref<any[] | any>([]);
+let tableData;
 
 const init = async () => {
+
+  tableData = props.metadata.data
+  currentPage = props.metadata.page
+  pageSize = props.metadata.pageSize
   const res = await props.callback(currentPage.value, pageSize.value);
 
   tableData.value = res.data
-  total.value= tableData.value.value.length
+  total.value= tableData.value.length
 }
 
 onBeforeMount(() => {
@@ -160,7 +164,7 @@ const handleSizeChange = async () => {
 
   const res = await props.callback(currentPage.value, pageSize.value);
   tableData.value = res.data
-  total.value = tableData.value.value.length
+  total.value = tableData.value.length
 
 
 }
@@ -173,7 +177,7 @@ const handleCurrentChange = async () => {
 
   const res = await props.callback(currentPage.value, pageSize.value);
   tableData.value = res.data
-  total.value= tableData.value.value.length
+  total.value= tableData.value.length
 
 
 }
