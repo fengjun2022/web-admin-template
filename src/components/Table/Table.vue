@@ -18,7 +18,6 @@
       <slot>
 
         <el-table-column v-if="props.selection" type="selection" width="75"/>
-        <el-table-column type="index" width="55" label="ID" align="center"></el-table-column>
         <el-table-column :fixed="item.fixed ? item.fixed : false"
                          v-for="(item,index) in metadata['metaArr']" :key="index"
                          :label="item.label"
@@ -58,7 +57,7 @@
           :disabled="disabled"
           :background="background"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+          :total="parseInt(total)"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
       />
@@ -68,7 +67,7 @@
 
 
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted, onBeforeMount, onBeforeUpdate, onUpdated, computed, watch} from 'vue';
+import {ref, onMounted, onUnmounted, onBeforeMount, onBeforeUpdate, onUpdated, computed} from 'vue';
 import {btnOption2, mateDataOptions} from "@/components/Table/type";
 import {layoutRouterSetting} from "@/store/settings/layoutRouterSetting";
 import {btColor} from "./enum/index"
@@ -78,7 +77,7 @@ const themeConfig = computed(() => settingsStore.themeConfig);
 
 
 const props = withDefaults(defineProps<{
-  maxHeight: number
+  maxHeight?: number
   // 传入表格元数据
   metadata: mateDataOptions;
 
@@ -118,10 +117,10 @@ const props = withDefaults(defineProps<{
 
 
 // 当前页数
-let currentPage
+let currentPage = ref(1);
 // 当前条数
-let pageSize
 
+let pageSize = ref(30);
 //总条数
 const total = ref();
 
@@ -137,8 +136,8 @@ let tableData;
 const init = async () => {
 
   tableData = props.metadata.data
-  currentPage = props.metadata.page
-  pageSize = props.metadata.pageSize
+  currentPage.value = props.metadata.pageParam["page"]
+  pageSize.value = props.metadata.pageParam["pageSize"]
   const res = await props.callback(currentPage.value, pageSize.value);
 
   tableData.value = res.data
@@ -161,7 +160,6 @@ onMounted(() => {
  * size改变事件
  */
 const handleSizeChange = async () => {
-
   const res = await props.callback(currentPage.value, pageSize.value);
   tableData.value = res.data
   total.value = tableData.value.length
@@ -211,11 +209,7 @@ const isObjectEmpty = (obj) => {
   return Object.keys(obj).length === 0;
 }
 
-watch(tableData, (newValue, oldValue) => {
-  total.value = newValue.value.length;
-}, {
-  deep: true // 如果你需要深度監聽物件或陣列的變化，設置這個選項為 true
-});
+
 
 
 onBeforeUpdate(() => {
@@ -229,10 +223,6 @@ onUnmounted(() => {
   // 在组件卸载前执行的代码
 });
 
-defineExpose({
-  page: currentPage,
-  pageSize: pageSize,
-})
 
 
 </script>

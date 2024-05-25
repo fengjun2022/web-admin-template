@@ -13,8 +13,7 @@ import type {Ref} from "vue";
 export type mateDataOptions = {
   metaArr: meta[];
   data: Ref<any>
-  page:Ref<number>
-  pageSize: Ref<number>
+  pageParam:Ref<{ page:number,pageSize:number }>
   buttons?: buttonMate[]
 }
 
