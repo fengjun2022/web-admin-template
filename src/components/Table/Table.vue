@@ -197,7 +197,6 @@ onUnmounted(() => {
 
 const fnCallback = async (fn:(...args)=> Promise<{ data: object[], total: number }>,...args)=>{
  const res = await fn(currentPage.value,pageSize.value,...args)
-  console.log(res)
   tableData.value = res[props.dataKey]
   total.value= res[props.totalKey]
 }
