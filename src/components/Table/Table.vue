@@ -14,9 +14,9 @@
               :default-sort="sort as any"
               @selection-change="props?.selectionCallback"
               :max-height="maxHeight"
-              :data="tableData.value">
+              :data="tableData">
       <slot>
-
+        <el-table-column align="center" v-if="props.isIndex" type="index" width="75" label="序号"/>
         <el-table-column v-if="props.selection" type="selection" width="75"/>
         <el-table-column :fixed="item.fixed ? item.fixed : false"
                          v-for="(item,index) in metadata['metaArr']" :key="index"
@@ -31,12 +31,7 @@
             <!--            自定义插槽，动态声明，-->
             <slot :row="scope.row" v-if="item.slot" :name="item.slot"></slot>
 
-            <div v-else-if="item.btn as boolean" class="flex justify-center">
-              <div v-for="(bt,index) in item.btnArr" :key="index" @click="bt.callback(scope.row)"
-                   :class=" colorEmun(bt.color,bt,scope.row)"
-              >{{ buttonText(bt, scope.row) }}
-              </div>
-            </div>
+
 
             <div v-else class="flex justify-center  place-items-center">
               <span class="ml-3" :style="{color: !themeConfig.isDark && item.color  }">{{
@@ -57,7 +52,7 @@
           :disabled="disabled"
           :background="background"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="parseInt(total)"
+          :total="total"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
       />
@@ -67,7 +62,7 @@
 
 
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted, onBeforeMount, onBeforeUpdate, onUpdated, computed} from 'vue';
+import {ref, onMounted, onUnmounted, onBeforeMount, onBeforeUpdate, onUpdated, computed, toRef} from 'vue';
 import {btnOption2, mateDataOptions} from "@/components/Table/type";
 import {layoutRouterSetting} from "@/store/settings/layoutRouterSetting";
 import {btColor} from "./enum/index"
@@ -81,6 +76,9 @@ const props = withDefaults(defineProps<{
   // 传入表格元数据
   metadata: mateDataOptions;
 
+  dataKey?:string,
+  totalKey?:string
+  isIndex?:boolean
   // 传入表格宽度
   width?: string,
   // 传入表格高度
@@ -108,6 +106,9 @@ const props = withDefaults(defineProps<{
   header_color: '#000000',
   align: "center",
   selection: false,
+  isIndex:true,
+  dataKey:"records",
+  totalKey:"total",
   sort: () => {
     return {}
   },
@@ -122,7 +123,7 @@ let currentPage = ref(1);
 
 let pageSize = ref(30);
 //总条数
-const total = ref();
+let total = ref(0);
 
 // small
 const small = ref(false)
@@ -131,17 +132,15 @@ const background = ref(true)
 // 是否禁用分页
 const disabled = ref(false)
 
-let tableData;
+let tableData = ref<object[]>([]);
 
 const init = async () => {
 
-  tableData = props.metadata.data
-  currentPage.value = props.metadata.pageParam["page"]
-  pageSize.value = props.metadata.pageParam["pageSize"]
+
   const res = await props.callback(currentPage.value, pageSize.value);
 
   tableData.value = res.data
-  total.value= tableData.value.length
+  total.value= res.total
 }
 
 onBeforeMount(() => {
@@ -162,7 +161,7 @@ onMounted(() => {
 const handleSizeChange = async () => {
   const res = await props.callback(currentPage.value, pageSize.value);
   tableData.value = res.data
-  total.value = tableData.value.length
+  total.value = res.total
 
 
 }
@@ -175,39 +174,12 @@ const handleCurrentChange = async () => {
 
   const res = await props.callback(currentPage.value, pageSize.value);
   tableData.value = res.data
-  total.value= tableData.value.length
+  total.value= res.total
 
 
 }
 
-const buttonText = (bt, row) => {
-  if (isObjectEmpty(row)) return;
-  if (bt.text instanceof Object) {
-    const button = bt as btnOption2
-    return button.text.enum[row[button.text.label]]
-  } else {
-    return bt.text;
-  }
-}
 
-const colorEmun = (colors: string, bt: btnOption2, row) => {
-  if (isObjectEmpty(row)) return;
-  if (bt.colorEnum !== undefined) {
-    if (bt.colorEnum.blue !== undefined && bt.colorEnum.blue.some(item => item === row[bt.text.label])) return btColor["blue"]
-    if (bt.colorEnum.red !== undefined && bt.colorEnum.red.some(item => item === row[bt.text.label])) return btColor["red"]
-    if (bt.colorEnum.green !== undefined && bt.colorEnum.green.some(item => item === row[bt.text.label])) return btColor["green"]
-
-  } else {
-
-    return btColor[colors] || btColor["blue"]
-
-  }
-
-
-}
-const isObjectEmpty = (obj) => {
-  return Object.keys(obj).length === 0;
-}
 
 
 
@@ -223,8 +195,18 @@ onUnmounted(() => {
   // 在组件卸载前执行的代码
 });
 
+const fnCallback = async (fn:(...args)=> Promise<{ data: object[], total: number }>,...args)=>{
+ const res = await fn(currentPage.value,pageSize.value,...args)
+  console.log(res)
+  tableData.value = res[props.dataKey]
+  total.value= res[props.totalKey]
+}
 
-
+defineExpose({
+  fnCallback,
+  tableData,
+  total
+})
 </script>
 
 

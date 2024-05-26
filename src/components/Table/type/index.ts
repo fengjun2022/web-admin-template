@@ -8,12 +8,9 @@
  *   align 排列方式,
  *   color:字体颜色
  */
-import type {Ref} from "vue";
 
 export type mateDataOptions = {
   metaArr: meta[];
-  data: Ref<any>
-  pageParam:Ref<{ page:number,pageSize:number }>
   buttons?: buttonMate[]
 }
 
